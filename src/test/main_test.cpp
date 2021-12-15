@@ -2,11 +2,14 @@
 // Created by ludwig on 22.11.16.
 //
 
-
 #include "Tests.h"
+
+using namespace std;
+using namespace ClassProject;
 
 TEST(TableTest,Truenode)  //to run test, create intially a basic table with true & false nodes
 {
+    //Manager Manager;
  //EXPECT_EQ(1, utable_vec[1].bdd_id);   //problem, doesn't detect the table created in the main file.
     EXPECT_EQ(1, 1);
 }
