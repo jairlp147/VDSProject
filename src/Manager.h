@@ -6,9 +6,23 @@
 #define VDSPROJECT_MANAGER_H
 
 #include "ManagerInterface.h"
+using namespace std;
+
+
+//extern struct table{
+// string node;
+//    int iID, iHigh, iLow, iTopVar;
+//}obj[5];
+//extern int GL_Top=0;
 
 namespace ClassProject {
-
+/*
+    struct table{
+        string node;
+        int iID, iHigh, iLow, iTopVar;
+    }obj[5];
+*/
+//int GL_Top=0;
     class Manager : public ManagerInterface {
     public:
         BDD_ID createVar(const std::string &label) override;
