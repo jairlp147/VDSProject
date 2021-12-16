@@ -10,11 +10,6 @@ using namespace ClassProject;
 TEST(TableTest,Truenode)  //to run test, create intially a basic table with true & false nodes
 {
     Manager Manager;
-    obj[1].node = "True";
-    obj[1].iID = 1;
-    obj[1].iHigh = 1;
-    obj[1].iLow = 1;
-    obj[1].iTopVar = 1;
     //bool temp=Manager.isConstant(7);
     //EXPECT_EQ(1, utable_vec[1].bdd_id);   //problem, doesn't detect the table created in the main file.
     EXPECT_EQ(1, 1);
