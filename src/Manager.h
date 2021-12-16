@@ -6,145 +6,136 @@
 #define VDSPROJECT_MANAGER_H
 
 #include "ManagerInterface.h"
-#include <string>
-#include <iostream>
-#include <iomanip>
-#include <vector>
-using namespace std;  //for string nodename?
+
 typedef int BDD_ID;
+struct table{
+    std::string node;
+    BDD_ID iID, iHigh, iLow, iTopVar;
+}BDD_table[5];
 
-//-------------VECTORS
-struct unique_table{
-    BDD_ID bdd_id,high,low,topVar;
-    string nodeName;
-};
-vector<unique_table> utable_vec;  //create vector of dataype structure
-vector<unique_table> popVector(vector<unique_table> utable_vec, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName);  //declare function
-bool checkTable(vector<unique_table> utable_vec, BDD_ID high, BDD_ID low, BDD_ID topVar);
-size_t  uniqueTableSize(); //return number of nodes in the unqiue table of Manager class
-void printuniquetable();
-void createtable();
-
-//---------------------definition of Vector Talbe functions
-
-
-void createtable(){
-    unique_table vectable;
-    vectable.bdd_id = 0;
-    vectable.nodeName = "False";
-    vectable.topVar = 0;
-    vectable.high = 0;
-    vectable.low = 0;
-    utable_vec.push_back(vectable);
-
-    vectable.bdd_id = 1;
-    vectable.nodeName = "True";
-    vectable.topVar = 1;
-    vectable.high = 1;
-    vectable.low = 1;
-    utable_vec.push_back(vectable);
-}
-
-vector<unique_table> popVector(vector<unique_table> utable_vec, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName){
-    //create structure, fill in info passed as argument and pop new vector into existing vectors.
-    unique_table vectable;
-    vectable.bdd_id = bdd_id;   //bdd_id of new node being added = vector.size -1;
-    vectable.nodeName = nodeName;
-    vectable.topVar = topVar;
-    vectable.high = high;
-    vectable.low = low;
-    utable_vec.push_back(vectable);
-    return utable_vec;
-}
-
-bool checkTable(vector<unique_table> utable_vec, BDD_ID high, BDD_ID low, BDD_ID topVar){  //return true if node exists in table
-    int size = uniqueTableSize();
-    for (int i=0; i<size; i++){
-        if (utable_vec[i].topVar==topVar){
-            if (utable_vec[i].high==high){
-                if(utable_vec[i].low==low){
-                    return true;  //
-                    break;
-                }
-            }
-        }
-    }
-}
-
-
-size_t uniqueTableSize(){
-    return utable_vec.size();
-}
-
-void printuniquetable(){
-    int size = uniqueTableSize();
-    cout << endl << left << setw(15) << "Node"<< left << setw(10) << "BDD_ID" << left << setw(10) << "High" << left << setw(10) <<"Low"<< left << setw(10) <<"TopVar";
-    for (int i=0; i<size; i++){
-        cout << endl << left << setw(15) << utable_vec[i].nodeName << left << setw(10) << utable_vec[i].bdd_id << left << setw(10) << utable_vec[i].high << left << setw(10) << utable_vec[i].low << left << setw(10) << utable_vec[i].topVar;
-    }
-}
-
-
-//extern struct table{
-// string node;
-//    int iID, iHigh, iLow, iTopVar;
-//}obj[5];
-//extern int GL_Top=0;
-//>>>>>> origin/master
+int GL_Top;
 
 namespace ClassProject {
-/*
-    struct table{
-        string node;
-        int iID, iHigh, iLow, iTopVar;
-    }obj[5];
-*/
-//int GL_Top=0;
-    class Manager : public ManagerInterface {
+
+    class MyManager: public ManagerInterface {
     public:
-        BDD_ID createVar(const std::string &label) override;
+        BDD_ID createVar(const std::string &label){
+            GL_Top++;
+            BDD_table[GL_Top].node = label;
+            BDD_table[GL_Top].iID = GL_Top;
 
-        const BDD_ID &True() override;
+            return BDD_table[GL_Top].iID;
+        };
 
-        const BDD_ID &False() override;
+        const BDD_ID True1(){
+            BDD_table[1].node = "True";
+            BDD_table[1].iID = 1;
+            BDD_table[1].iHigh = 1;
+            BDD_table[1].iLow = 1;
+            BDD_table[1].iTopVar = 1;
 
-        bool isConstant(BDD_ID f) override;
+            GL_Top = BDD_table[1].iID;
+            return BDD_table[1].iID;
+        };
 
-        bool isVariable(BDD_ID x) override;
+        const BDD_ID False1(){
+            BDD_table[0].node = "False";
+            BDD_table[0].iID = 0;
+            BDD_table[0].iHigh = 0;
+            BDD_table[0].iLow = 0;
+            BDD_table[0].iTopVar = 0;
 
-        BDD_ID topVar(BDD_ID f) override;
+            GL_Top = BDD_table[0].iID;
+            return BDD_table[0].iID;
+        };
 
-        BDD_ID ite(BDD_ID i, BDD_ID t, BDD_ID e) override;
+        bool isConstant(BDD_ID f){
+            if ((BDD_table[f].iID == BDD_table[f].iHigh) && (BDD_table[f].iHigh == BDD_table[f].iLow) ){
+                return true;
+            }
+            else{
+                return false;
+            }
+        };
 
-        BDD_ID coFactorTrue(BDD_ID f, BDD_ID x) override;
+        bool isVariable(BDD_ID x){
+            if ((BDD_table[x].iID == BDD_table[x].iHigh) && (BDD_table[x].iHigh == BDD_table[x].iLow) ){
+                return false;
+            }
+            else{
+                return true;
+            }
+        };
 
-        BDD_ID coFactorFalse(BDD_ID f, BDD_ID x) override;
+        BDD_ID topVar(BDD_ID f) {
+            return BDD_table[f].iTopVar;
+        };
 
-        BDD_ID coFactorTrue(BDD_ID f) override;
+        BDD_ID ite(BDD_ID i, BDD_ID t, BDD_ID e) { return 0;};
 
-        BDD_ID coFactorFalse(BDD_ID f) override;
+        BDD_ID coFactorTrue(BDD_ID f, BDD_ID x) { return 0;};
 
-        BDD_ID neg(BDD_ID a) override;
+        BDD_ID coFactorFalse(BDD_ID f, BDD_ID x) { return 0;};
 
-        BDD_ID and2(BDD_ID a, BDD_ID b) override;
+        BDD_ID coFactorTrue(BDD_ID f) { return 0;};
 
-        BDD_ID or2(BDD_ID a, BDD_ID b) override;
+        BDD_ID coFactorFalse(BDD_ID f) { return 0;};
 
-        BDD_ID xor2(BDD_ID a, BDD_ID b) override;
+        BDD_ID neg(BDD_ID a) {
+            BDD_ID temp;
+            temp = ite(a, 0, 1);
+            return temp;
+        };
 
-        BDD_ID nand2(BDD_ID a, BDD_ID b) override;
+        BDD_ID and2(BDD_ID a, BDD_ID b) {
+            BDD_ID temp;
+            temp = ite(a, b, 0);
+            return temp;
+        };
 
-        BDD_ID nor2(BDD_ID a, BDD_ID b) override;
+        BDD_ID or2(BDD_ID a, BDD_ID b) {
+            BDD_ID temp;
+            temp = ite(a, 1, b);
+            return temp;
+        };
 
-        BDD_ID xnor2(BDD_ID a, BDD_ID b) override;
+        BDD_ID xor2(BDD_ID a, BDD_ID b) {
+            BDD_ID temp;
+            temp = ite(a, !b, b);
+            return temp;
+        };
 
-        std::string getTopVarName(const BDD_ID &root) override;
+        BDD_ID nand2(BDD_ID a, BDD_ID b) {
+            BDD_ID temp;
+            temp = ite(!a, 1, !b);
+            return temp;
+        };
 
-        void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) override;
+        BDD_ID nor2(BDD_ID a, BDD_ID b) {
+            BDD_ID temp;
+            temp = ite(!a, !b, 0);
+            return temp;
+        };
 
-        void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) override;
+        BDD_ID xnor2(BDD_ID a, BDD_ID b) {
+            BDD_ID temp;
+            temp = ite(a, b, !b);
+            return temp;
+        };
 
-        size_t uniqueTableSize() override;
+        std::string getTopVarName(const BDD_ID &root) {
+            BDD_ID temp;
+            temp = BDD_table[root].iTopVar;
+            return BDD_table[temp].node;
+        };
+
+        void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root) { };
+
+        void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) { };
+
+        size_t uniqueTableSize() { return 0;};
     };
+
 }
+
 #endif

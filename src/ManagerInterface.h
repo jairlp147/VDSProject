@@ -10,15 +10,15 @@
 
 namespace ClassProject {
 
-    typedef size_t BDD_ID;
+    typedef int BDD_ID;
 
     class ManagerInterface {
     public:
         virtual BDD_ID createVar(const std::string &label) = 0;
 
-        virtual const BDD_ID &True() = 0;
+        virtual const BDD_ID True1() = 0;
 
-        virtual const BDD_ID &False() = 0;
+        virtual const BDD_ID False1() = 0;
 
         virtual bool isConstant(BDD_ID f) = 0;
 
