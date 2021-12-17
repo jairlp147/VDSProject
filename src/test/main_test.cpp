@@ -4,8 +4,12 @@
 
 #include "Tests.h"
 
+#include <string>
+#include <set>
+
 using namespace std;
 using namespace ClassProject;
+
 
 TEST(TableTest,Truenode)  //to run test, create intially a basic table with true & false nodes
 {
@@ -249,6 +253,173 @@ TEST(Test_getTopVarName,Test_getTopVarName_9){
     std::string MyTest = MyManager.getTopVarName(9);
     EXPECT_EQ(MyTest, "a");
 }
+
+TEST(Test_findNodes,Test_findNodes_0){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {0};
+    MyManager.findNodes(0, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_1){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {1};
+    MyManager.findNodes(1, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_2){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {2,1,0};
+    MyManager.findNodes(2, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_3){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {3,1,0};
+    MyManager.findNodes(3, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_4){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {4,1,0};
+    MyManager.findNodes(4, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_5){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {5,1,0};
+    MyManager.findNodes(5, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_6){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {6,3,1,0};
+    MyManager.findNodes(6, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_7){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {7,5,1,0};
+    MyManager.findNodes(7, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_8){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {8,7,1,0};
+    MyManager.findNodes(8, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findNodes,Test_findNodes_9){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {9,8,7,1,0};
+    MyManager.findNodes(9, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_0){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {0};
+    MyManager.findVars(0, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_1){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {1};
+    MyManager.findVars(1, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_2){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {2};
+    MyManager.findVars(2, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_3){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {3};
+    MyManager.findVars(3, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_4){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {4};
+    MyManager.findVars(4, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_5){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {5};
+    MyManager.findVars(5, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_6){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {6,2};
+    MyManager.findVars(6, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_7){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {7,4};
+    MyManager.findVars(7, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_8){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {8,3};
+    MyManager.findVars(8, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_findVars,Test_findVars_9){
+    MyManager MyManager;
+    std::set<int> MyTest = {};
+    std::set<int> Result = {9,2};
+    MyManager.findVars(9, MyTest);
+    EXPECT_EQ(MyTest,Result);
+}
+
+TEST(Test_uniqueTableSize,Test_uniqueTableSize_0){
+    MyManager MyManager;
+    size_t MyTest = MyManager.uniqueTableSize();
+    EXPECT_EQ(MyTest, 10);
+}
+
 
 int main(int argc, char* argv[])
 {
