@@ -10,24 +10,12 @@ using namespace ClassProject;
 
 int main(int argc, char* argv[])
 {
-
-    BDD_ID x,y,z,b,p,q,r,s;
     MyManager MyManager;
-
-    x = MyManager.False1();
-    y = MyManager.True1();
-    z = MyManager.createVar("a");
-    b = MyManager.createVar("b");
-    x = MyManager.createVar("c");
-    x = MyManager.createVar("d");
-
-    p = MyManager.or2(2,3);
-    q = MyManager.and2(4,5);
-    r = MyManager.and2(6,7);
-
-    for(int i=0;i<MyManager.uniqueTableSize();i++){
-        cout<<BDD_table[i].node<<"     "<<BDD_table[i].iID<<"     "<<BDD_table[i].iHigh<<"     "<<BDD_table[i].iLow<<"     "<<BDD_table[i].iTopVar<<endl;
-    }
-
-    return 0;
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID c = MyManager.createVar("c");
+    BDD_ID d = MyManager.createVar("d");
+    BDD_ID f = MyManager.and2(MyManager.and2(c,d),MyManager.or2(a,b));
+    MyManager.print_table();
 }

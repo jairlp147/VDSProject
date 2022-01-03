@@ -10,385 +10,274 @@
 using namespace std;
 using namespace ClassProject;
 
-
-//TEST(TableTest,Truenode)  //to run test, create intially a basic table with true & false nodes
-//{
-////    Manager Manager;
-//    //bool temp=Manager.isConstant(7);
-//    //EXPECT_EQ(1, utable_vec[1].bdd_id);   //problem, doesn't detect the table created in the main file.
-//    EXPECT_EQ(1, 1);
-//}
-//
-//TEST(TableTest,Falsenode)  //to run test, create intially a basic table with true & false nodes
-//{
-// //EXPECT_EQ(0, utable_vec[0].bdd_id);   //problem, doesn't detect the table created in the main file.
-//    EXPECT_EQ(1, 1);
-//}
-
-/* Kiran's Code */
-
-TEST(Test_False1,Test_low_node){
+//Default value of the table
+TEST(defaultvalues,BDD_table){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.False1();
-    EXPECT_EQ(MyTest,0);
+    MyManager.reset_table();
+    //False node test
+    EXPECT_EQ(BDD_table[0].iID,0);
+    EXPECT_EQ(BDD_table[0].iHigh,0);
+    EXPECT_EQ(BDD_table[0].iLow,0);
+    EXPECT_EQ(BDD_table[0].iTopVar,0);
+    //True node test
+    EXPECT_EQ(BDD_table[1].iID,1);
+    EXPECT_EQ(BDD_table[1].iHigh,1);
+    EXPECT_EQ(BDD_table[1].iLow,1);
+    EXPECT_EQ(BDD_table[1].iTopVar,1);
+    //Initial size test
+    EXPECT_EQ(MyManager.uniqueTableSize(),2);
+}
+//No repeat a node
+
+TEST(Test_False,Test_low_node){
+    MyManager MyManager;
+    MyManager.reset_table();
+    EXPECT_EQ(MyManager.False(),0); //Test of the False function
 }
 
-TEST(Test_True1,Test_high_node){
+TEST(Test_True,Test_high_node){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.True1();
-    EXPECT_EQ(MyTest,1);
+    MyManager.reset_table();
+    EXPECT_EQ(MyManager.True(),1); //Test of the True function
 }
 
-TEST(Test_createVar,Test_createVar_a){
+TEST(Test_createVar,functions){
     MyManager MyManager;
+    MyManager.reset_table();
     BDD_ID MyTest = MyManager.createVar("a");
+    //Value's test
     EXPECT_EQ(MyTest,2);
+    EXPECT_EQ(BDD_table[MyTest].iHigh,1);
+    EXPECT_EQ(BDD_table[MyTest].iLow,0);
+    EXPECT_EQ(BDD_table[MyTest].iTopVar,MyTest);
+    //The size has to increase by 1
+    EXPECT_EQ(MyManager.uniqueTableSize(),3);
 }
 
-TEST(Test_createVar,Test_createVar_b){
+TEST(Test_isConstant,functions){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.createVar("b");
-    EXPECT_EQ(MyTest,3);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    EXPECT_EQ(MyManager.isConstant(MyManager.False()), true);//False is a constant
+    EXPECT_EQ(MyManager.isConstant(MyManager.True()), true);//True is a constant
+    EXPECT_EQ(MyManager.isConstant(a), false);//a is not a constant
 }
 
-TEST(Test_createVar,Test_createVar_c){
+TEST(Test_isVariable,functions){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.createVar("c");
-    EXPECT_EQ(MyTest,4);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    EXPECT_EQ(MyManager.isVariable(MyManager.True()), false);//True is not a variable
+    EXPECT_EQ(MyManager.isVariable(a), true);//a is a variable
 }
 
-TEST(Test_createVar,Test_createVar_d){
+TEST(Test_TopVariable,functions){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.createVar("d");
-    EXPECT_EQ(MyTest,5);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    EXPECT_EQ(MyManager.topVar(0), 0);
+    EXPECT_EQ(MyManager.topVar(1), 1);
+    EXPECT_EQ(MyManager.topVar(a), a);
 }
 
-TEST(Test_isConstant,Test_ID_0){
+TEST(Test_ite,functions){
     MyManager MyManager;
-    bool MyTest = MyManager.isConstant(0);
-    EXPECT_EQ(MyTest, true);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    //Terminal case
+    EXPECT_EQ(MyManager.ite(0,a,b), b);
+    EXPECT_EQ(MyManager.ite(1,a,b), a);
+    EXPECT_EQ(MyManager.uniqueTableSize(), 4);//Terminal cases don't create new nodes
+    //apply the ite algorithm
+    BDD_ID ite=MyManager.ite(a,1,b);//A or B
+    EXPECT_EQ(ite, 4);// A new ID was created
+    EXPECT_EQ(BDD_table[ite].iHigh, 1);//Verifying with the OR behavior
+    EXPECT_EQ(BDD_table[ite].iLow, 3);//Verifying with the OR behavior
+    EXPECT_EQ(MyManager.uniqueTableSize(), 5);//A new node should be created
 }
 
-TEST(Test_isConstant,Test_ID_1){
+//Functions require for ite
+TEST(Test_TopVariable_3,ITEfunctions){
     MyManager MyManager;
-    bool MyTest = MyManager.isConstant(1);
-    EXPECT_EQ(MyTest, true);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID c = MyManager.createVar("c");
+    EXPECT_EQ(MyManager.TopVariable_3(MyManager.True(),b,c), b);
+    EXPECT_EQ(MyManager.TopVariable_3(a,b,c), a);
 }
 
-TEST(Test_isConstant,Test_ID_2){
+TEST(Test_find_or_add_unique_table,ITEfunctions){
     MyManager MyManager;
-    bool MyTest = MyManager.isConstant(2);
-    EXPECT_EQ(MyTest, false);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    //Find a node
+    EXPECT_EQ(MyManager.find_or_add_unique_table(1,1,1), 1);//Should find the True node
+    EXPECT_EQ(MyManager.find_or_add_unique_table(a,1,0), a);//Should find the A node
+    //Add a node
+    BDD_ID NewNode = MyManager.find_or_add_unique_table(a,0,1);//Should create a new node for not(A)
+    EXPECT_EQ(NewNode, 3);//A new ID should be created
+    EXPECT_EQ(BDD_table[NewNode].iHigh, 0);
+    EXPECT_EQ(BDD_table[NewNode].iLow, 1);
+}
+//End of ITE functions
+
+TEST(Test_coFactorTrue,functions){
+    MyManager MyManager;
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    //Terminal case
+    EXPECT_EQ(MyManager.coFactorTrue(MyManager.True(),a), MyManager.True());
+    EXPECT_EQ(MyManager.coFactorTrue(a,MyManager.True()), a);
+    EXPECT_EQ(MyManager.coFactorTrue(a,b), a);
+    //apply the coFactorTrue algorithm
+    BDD_ID AorB = MyManager.find_or_add_unique_table(a,1,b);//Create a "A or B" node
+    BDD_ID AandB = MyManager.find_or_add_unique_table(a,b,0);//Create a "A and B" node
+    EXPECT_EQ(MyManager.coFactorTrue(AorB,a), 1);
+    EXPECT_EQ(MyManager.coFactorTrue(AandB,a), b);
 }
 
-TEST(Test_isVariable,Test_ID_0){
+TEST(Test_coFactorFalse,functions){
     MyManager MyManager;
-    bool MyTest = MyManager.isVariable(0);
-    EXPECT_EQ(MyTest, false);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    //Terminal case
+    EXPECT_EQ(MyManager.coFactorFalse(MyManager.True(),a), MyManager.True());
+    EXPECT_EQ(MyManager.coFactorFalse(a,MyManager.True()), a);
+    EXPECT_EQ(MyManager.coFactorFalse(a,b), a);
+    //apply the coFactorTrue algorithm
+    BDD_ID AorB = MyManager.find_or_add_unique_table(a,1,b);//Create a "A or B" node
+    BDD_ID AandB = MyManager.find_or_add_unique_table(a,b,0);//Create a "A and B" node
+    EXPECT_EQ(MyManager.coFactorFalse(AorB,a), b);
+    EXPECT_EQ(MyManager.coFactorFalse(AandB,a), 0);
 }
 
-TEST(Test_isVariable,Test_ID_1){
+TEST(Test_neg,functions){
     MyManager MyManager;
-    bool MyTest = MyManager.isVariable(1);
-    EXPECT_EQ(MyTest, false);
+    MyManager.reset_table();
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID negB = MyManager.neg(b);
+    EXPECT_EQ(BDD_table[negB].iTopVar, b);
+    EXPECT_EQ(BDD_table[negB].iHigh, 0);
+    EXPECT_EQ(BDD_table[negB].iLow, 1);
 }
 
-TEST(Test_isVariable,Test_ID_2){
+TEST(Test_and2,functions){
     MyManager MyManager;
-    bool MyTest = MyManager.isVariable(2);
-    EXPECT_EQ(MyTest, true);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID AandB = MyManager.and2(a,b);
+    EXPECT_EQ(BDD_table[AandB].iTopVar, a);
+    EXPECT_EQ(BDD_table[AandB].iHigh, b);
+    EXPECT_EQ(BDD_table[AandB].iLow, 0);
 }
 
-TEST(Test_or2,Test_a_or2_b){
+TEST(Test_or2,functions){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.or2(2,3);
-    EXPECT_EQ(MyTest, 6);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID AorB = MyManager.or2(a,b);
+    EXPECT_EQ(BDD_table[AorB].iTopVar, a);
+    EXPECT_EQ(BDD_table[AorB].iHigh, 1);
+    EXPECT_EQ(BDD_table[AorB].iLow, b);
 }
 
-TEST(Test_and2,Test_c_and2_d){
+TEST(Test_xor2,functions){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.and2(4,5);
-    EXPECT_EQ(MyTest, 7);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID AxorB = MyManager.xor2(a,b);
+    EXPECT_EQ(BDD_table[AxorB].iTopVar, a);
+    EXPECT_EQ(BDD_table[AxorB].iHigh, MyManager.neg(b));
+    EXPECT_EQ(BDD_table[AxorB].iLow, b);
 }
 
-TEST(Test_and2,Test_f){
+TEST(Test_nand2,functions){
     MyManager MyManager;
-    BDD_ID MyTest = MyManager.and2(6,7);
-    EXPECT_EQ(MyTest, 9);
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID AnandB = MyManager.nand2(a,b);
+    EXPECT_EQ(BDD_table[AnandB].iTopVar, a);
+    EXPECT_EQ(BDD_table[AnandB].iHigh, MyManager.neg(b));
+    EXPECT_EQ(BDD_table[AnandB].iLow, 1);
+}
+
+TEST(Test_nor2,functions){
+    MyManager MyManager;
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID AnorB = MyManager.nor2(a,b);
+    EXPECT_EQ(BDD_table[AnorB].iTopVar, a);
+    EXPECT_EQ(BDD_table[AnorB].iHigh, 0);
+    EXPECT_EQ(BDD_table[AnorB].iLow, MyManager.neg(b));
+}
+
+TEST(Test_xnor2,functions){
+    MyManager MyManager;
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID AxnorB = MyManager.xnor2(a,b);
+    EXPECT_EQ(BDD_table[AxnorB].iTopVar, a);
+    EXPECT_EQ(BDD_table[AxnorB].iHigh, b);
+    EXPECT_EQ(BDD_table[AxnorB].iLow, MyManager.neg(b));
 }
 
 TEST(Test_getTopVarName,Test_getTopVarName_2){
     MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(2);
-    EXPECT_EQ(MyTest, "a");
+    MyManager.reset_table();
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID AxnorB = MyManager.xnor2(a,b);
+    EXPECT_EQ(MyManager.getTopVarName(AxnorB), "a");
 }
 
-TEST(Test_getTopVarName,Test_getTopVarName_3){
+TEST(Test_findNodes,functions){
     MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(3);
-    EXPECT_EQ(MyTest, "b");
-}
-
-TEST(Test_getTopVarName,Test_getTopVarName_4){
-    MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(4);
-    EXPECT_EQ(MyTest, "c");
-}
-
-TEST(Test_getTopVarName,Test_getTopVarName_5){
-    MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(5);
-    EXPECT_EQ(MyTest, "d");
-}
-
-TEST(Test_getTopVarName,Test_getTopVarName_6){
-    MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(6);
-    EXPECT_EQ(MyTest, "a");
-}
-
-TEST(Test_getTopVarName,Test_getTopVarName_7){
-    MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(7);
-    EXPECT_EQ(MyTest, "c");
-}
-
-TEST(Test_getTopVarName,Test_getTopVarName_8){
-    MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(8);
-    EXPECT_EQ(MyTest, "b");
-}
-
-TEST(Test_getTopVarName,Test_getTopVarName_9){
-    MyManager MyManager;
-    std::string MyTest = MyManager.getTopVarName(9);
-    EXPECT_EQ(MyTest, "a");
-}
-
-TEST(Test_findNodes,Test_findNodes_0){
-    MyManager MyManager;
+    MyManager.reset_table();
     std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0};
-    MyManager.findNodes(0, MyTest);
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID c = MyManager.createVar("c");
+    BDD_ID d = MyManager.createVar("d");
+    BDD_ID f = MyManager.and2(MyManager.and2(c,d),MyManager.or2(a,b));
+    MyManager.findNodes(8,MyTest);
+    std::set<BDD_ID> Result = {0,1,5,7,8};
+    EXPECT_EQ(MyTest,Result);
+    MyTest = {};
+    MyManager.findNodes(6,MyTest);
+    Result = {0,1,3,6};
     EXPECT_EQ(MyTest,Result);
 }
 
-TEST(Test_findNodes,Test_findNodes_1){
+TEST(Test_findVars,functions){
     MyManager MyManager;
+    MyManager.reset_table();
     std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {1};
-    MyManager.findNodes(1, MyTest);
+    BDD_ID a = MyManager.createVar("a");
+    BDD_ID b = MyManager.createVar("b");
+    BDD_ID c = MyManager.createVar("c");
+    BDD_ID d = MyManager.createVar("d");
+    BDD_ID f = MyManager.and2(MyManager.and2(c,d),MyManager.or2(a,b));
+    MyManager.findVars(8,MyTest);
+    std::set<BDD_ID> Result = {3,4,5};
     EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_2){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,2};
-    MyManager.findNodes(2, MyTest);
+    MyTest = {};
+    MyManager.findVars(MyManager.or2(a,b),MyTest);
+    Result = {a,b};
     EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_3){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,3};
-    MyManager.findNodes(3, MyTest);
+    MyTest = {};
+    MyManager.findVars(f,MyTest);
+    Result = {a,b,c,d};
     EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_4){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,4};
-    MyManager.findNodes(4, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_5){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,5};
-    MyManager.findNodes(5, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_6){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,3,6};
-    MyManager.findNodes(6, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_7){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,5,7};
-    MyManager.findNodes(7, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_8){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,7,8};
-    MyManager.findNodes(8, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findNodes,Test_findNodes_9){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0,1,7,8,9};
-    MyManager.findNodes(9, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_0){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {0};
-    MyManager.findVars(0, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_1){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {1};
-    MyManager.findVars(1, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_2){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {2};
-    MyManager.findVars(2, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_3){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {3};
-    MyManager.findVars(3, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_4){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {4};
-    MyManager.findVars(4, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_5){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {5};
-    MyManager.findVars(5, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_6){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {2,6};
-    MyManager.findVars(6, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_7){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {4,7};
-    MyManager.findVars(7, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_8){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {3,8};
-    MyManager.findVars(8, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_findVars,Test_findVars_9){
-    MyManager MyManager;
-    std::set<BDD_ID> MyTest = {};
-    std::set<BDD_ID> Result = {2,9};
-    MyManager.findVars(9, MyTest);
-    EXPECT_EQ(MyTest,Result);
-}
-
-TEST(Test_uniqueTableSize,Test_uniqueTableSize_0){
-    MyManager MyManager;
-    size_t MyTest = MyManager.uniqueTableSize();
-    EXPECT_EQ(MyTest, 10);
-}
-
-TEST(Test_topVar,Test_topVar_False){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(0);
-    EXPECT_EQ(MyTest, 0);
-}
-
-TEST(Test_topVar,Test_topVar_True){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(1);
-    EXPECT_EQ(MyTest, 1);
-}
-
-TEST(Test_topVar,Test_topVar_2){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(2);
-    EXPECT_EQ(MyTest, 2);
-}
-
-TEST(Test_topVar,Test_topVar_3){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(3);
-    EXPECT_EQ(MyTest, 3);
-}
-
-TEST(Test_topVar,Test_topVar_4){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(4);
-    EXPECT_EQ(MyTest, 4);
-}
-
-TEST(Test_topVar,Test_topVar_5){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(5);
-    EXPECT_EQ(MyTest, 5);
-}
-
-TEST(Test_topVar,Test_topVar_6){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(6);
-    EXPECT_EQ(MyTest, 2);
-}
-
-TEST(Test_topVar,Test_topVar_7){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(7);
-    EXPECT_EQ(MyTest, 4);
-}
-
-TEST(Test_topVar,Test_topVar_8){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(8);
-    EXPECT_EQ(MyTest, 3);
-}
-
-TEST(Test_topVar,Test_topVar_9){
-    MyManager MyManager;
-    BDD_ID MyTest = MyManager.topVar(9);
-    EXPECT_EQ(MyTest, 2);
 }
 
 int main(int argc, char* argv[])
