@@ -233,6 +233,12 @@ void ClassProject::Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_
     if(!isConstant(unique_table[root].iLow)){
         findVars(unique_table[root].iLow, vars_of_root);
     }
+    if (isConstant(unique_table[root].iHigh)){
+        return;                                                            //   CORRECT??????
+    }
+    if (isConstant(unique_table[root].iLow)){
+        return;                                                            //   CORRECT??????
+    }
 }
 
 
