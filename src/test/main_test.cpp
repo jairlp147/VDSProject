@@ -12,7 +12,7 @@ using namespace ClassProject;
 
 //Default value of the table
 TEST(defaultvalues,BDD_table){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     //False node test
     EXPECT_EQ(BDD_table[0].iID,0);
@@ -30,19 +30,19 @@ TEST(defaultvalues,BDD_table){
 //No repeat a node
 
 TEST(Test_False,Test_low_node){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     EXPECT_EQ(MyManager.False(),0); //Test of the False function
 }
 
 TEST(Test_True,Test_high_node){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     EXPECT_EQ(MyManager.True(),1); //Test of the True function
 }
 
 TEST(Test_createVar,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID MyTest = MyManager.createVar("a");
     //Value's test
@@ -55,7 +55,7 @@ TEST(Test_createVar,functions){
 }
 
 TEST(Test_isConstant,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     EXPECT_EQ(MyManager.isConstant(MyManager.False()), true);//False is a constant
@@ -64,7 +64,7 @@ TEST(Test_isConstant,functions){
 }
 
 TEST(Test_isVariable,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     EXPECT_EQ(MyManager.isVariable(MyManager.True()), false);//True is not a variable
@@ -72,7 +72,7 @@ TEST(Test_isVariable,functions){
 }
 
 TEST(Test_TopVariable,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     EXPECT_EQ(MyManager.topVar(0), 0);
@@ -81,7 +81,7 @@ TEST(Test_TopVariable,functions){
 }
 
 TEST(Test_ite,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -99,7 +99,7 @@ TEST(Test_ite,functions){
 
 //Functions require for ite
 TEST(Test_TopVariable_3,ITEfunctions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -109,7 +109,7 @@ TEST(Test_TopVariable_3,ITEfunctions){
 }
 
 TEST(Test_find_or_add_unique_table,ITEfunctions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     //Find a node
@@ -124,7 +124,7 @@ TEST(Test_find_or_add_unique_table,ITEfunctions){
 //End of ITE functions
 
 TEST(Test_coFactorTrue,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -140,7 +140,7 @@ TEST(Test_coFactorTrue,functions){
 }
 
 TEST(Test_coFactorFalse,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -156,7 +156,7 @@ TEST(Test_coFactorFalse,functions){
 }
 
 TEST(Test_neg,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID b = MyManager.createVar("b");
     BDD_ID negB = MyManager.neg(b);
@@ -166,7 +166,7 @@ TEST(Test_neg,functions){
 }
 
 TEST(Test_and2,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -177,7 +177,7 @@ TEST(Test_and2,functions){
 }
 
 TEST(Test_or2,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -188,7 +188,7 @@ TEST(Test_or2,functions){
 }
 
 TEST(Test_xor2,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -199,7 +199,7 @@ TEST(Test_xor2,functions){
 }
 
 TEST(Test_nand2,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -210,7 +210,7 @@ TEST(Test_nand2,functions){
 }
 
 TEST(Test_nor2,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -221,7 +221,7 @@ TEST(Test_nor2,functions){
 }
 
 TEST(Test_xnor2,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -232,7 +232,7 @@ TEST(Test_xnor2,functions){
 }
 
 TEST(Test_getTopVarName,Test_getTopVarName_2){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
@@ -241,7 +241,7 @@ TEST(Test_getTopVarName,Test_getTopVarName_2){
 }
 
 TEST(Test_findNodes,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     std::set<BDD_ID> MyTest = {};
     BDD_ID a = MyManager.createVar("a");
@@ -259,7 +259,7 @@ TEST(Test_findNodes,functions){
 }
 
 TEST(Test_findVars,functions){
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     std::set<BDD_ID> MyTest = {};
     BDD_ID a = MyManager.createVar("a");

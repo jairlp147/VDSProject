@@ -10,7 +10,7 @@ using namespace ClassProject;
 
 int main(int argc, char* argv[])
 {
-    MyManager MyManager;
+    Manager MyManager;
     MyManager.reset_table();
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
