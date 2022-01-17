@@ -10,9 +10,6 @@ BDD_ID GL_Top;
 bool flag = 0;
 
 
-
-
-
 void ClassProject::Manager::reset_table() {
     for (int i=0;i<uniqueTableSize();i++){
         BDD_table[i].iID=0;
