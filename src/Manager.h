@@ -33,7 +33,7 @@ namespace ClassProject {
 
         Manager(); //constructor
 
-        vector<table> popVector(vector<table> unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName);
+        vector<table> popVector(vector<table> unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName); //add new vector
 
         void reset_table();
 

@@ -95,11 +95,11 @@ bool ClassProject::Manager::isConstant(const BDD_ID f) {
 }
 
 bool ClassProject::Manager::isVariable(const BDD_ID x) {
-    if ((unique_table[x].iID == unique_table[x].iHigh) && (unique_table[x].iHigh == unique_table[x].iLow) ){
-        return false;
+    if (unique_table[x].iHigh==1 && unique_table[x].iLow==0){ //Variable: High=1 & Low =0
+        return true;
     }
     else{
-        return true;
+        return false;
     }
 }
 
