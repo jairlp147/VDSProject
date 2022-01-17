@@ -41,13 +41,6 @@ vector<table> ClassProject::Manager::popVector(vector<table> unique_table, BDD_I
 
 void::ClassProject::Manager::print_table(){
 
-   /*
-    cout<<"Node"<<"     "<<"ID"<<"     "<<"High"<<"     "<<"Low"<<"     "<<"TopVar"<<endl;
-    for(int i=0;i<uniqueTableSize();i++){
-        cout<<unique_table[i].node<<"     "<<unique_table[i].iID<<"     "<<unique_table[i].iHigh<<"     "<<unique_table[i].iLow<<"     "<<unique_table[i].iTopVar<<endl;
-    }
-    */
-
     cout << endl << left << setw(15) << "Node"<< left << setw(10) << "BDD_ID" << left << setw(10) << "High" << left << setw(10) <<"Low"<< left << setw(10) <<"TopVar";
     for (int i=0; i<uniqueTableSize(); i++){
         cout << endl << left << setw(15) << unique_table[i].node << left << setw(10) << unique_table[i].iID << left << setw(10) << unique_table[i].iHigh << left << setw(10) << unique_table[i].iLow << left << setw(10) << unique_table[i].iTopVar;
