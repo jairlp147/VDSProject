@@ -11,7 +11,7 @@ using namespace ClassProject;
 int main(int argc, char* argv[])
 {
     Manager MyManager;
-    MyManager.reset_table();
+  //  MyManager.reset_table();  not needed anymore as constructor will call reset_table
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID c = MyManager.createVar("c");

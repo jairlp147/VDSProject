@@ -8,20 +8,32 @@
 #include "ManagerInterface.h"
 #include <algorithm>
 #include <iostream>
+#include <iomanip>
 #include <string>
+#include <vector>
 
 using namespace std;
 
 typedef int BDD_ID;
 
+struct table{
+    std::string node;
+    BDD_ID iID, iHigh, iLow, iTopVar;
+};
 
 namespace ClassProject {
 
-
     class Manager: public ManagerInterface {
+
+    private:
+
+        vector<table> unique_table;  //create vector of dataype structure //vector table "unique_table" here so it's private access
+
     public:
 
-        //Manager(); //constructor
+        Manager(); //constructor
+
+        vector<table> popVector(vector<table> unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName);
 
         void reset_table();
 
