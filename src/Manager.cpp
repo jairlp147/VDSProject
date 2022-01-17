@@ -1,7 +1,5 @@
 #include "Manager.h"
 
-// bool flag = 0;  not used
-
 ClassProject::Manager::Manager() {  //contructor
     reset_table();
 }
@@ -42,7 +40,7 @@ vector<table> ClassProject::Manager::popVector(vector<table> unique_table, BDD_I
 void::ClassProject::Manager::print_table(){
 
     cout << endl << left << setw(15) << "Node"<< left << setw(10) << "BDD_ID" << left << setw(10) << "High" << left << setw(10) <<"Low"<< left << setw(10) <<"TopVar";
-    for (int i=0; i<uniqueTableSize(); i++){
+    for (size_t i=0; i<uniqueTableSize(); i++){
         cout << endl << left << setw(15) << unique_table[i].node << left << setw(10) << unique_table[i].iID << left << setw(10) << unique_table[i].iHigh << left << setw(10) << unique_table[i].iLow << left << setw(10) << unique_table[i].iTopVar;
     }
 }
@@ -63,7 +61,7 @@ BDD_ID ClassProject::Manager::TopVariable_3(const BDD_ID a, const BDD_ID b, cons
 
 BDD_ID ClassProject::Manager::find_or_add_unique_table(const BDD_ID TopVariable, const BDD_ID r_high,
                                                        const BDD_ID r_low) {
-    for(int i=0;i<uniqueTableSize();i++){
+    for(size_t i=0;i<uniqueTableSize();i++){
         if((unique_table[i].iTopVar==TopVariable)&&(unique_table[i].iHigh==r_high)&&(unique_table[i].iLow==r_low)){
             return unique_table[i].iID;
         }
