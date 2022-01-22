@@ -16,15 +16,15 @@ TEST(defaultvalues,unique_table){
     Manager MyManager;
     MyManager.reset_table();
     //False node test
-    EXPECT_EQ(unique_table[0].iID,0);
-    EXPECT_EQ(unique_table[0].iHigh,0);
-    EXPECT_EQ(unique_table[0].iLow,0);
-    EXPECT_EQ(unique_table[0].iTopVar,0);
+    EXPECT_EQ(MyManager.table_element(0,"iID"),0);
+    EXPECT_EQ(MyManager.table_element(0,"iHigh"),0);
+    EXPECT_EQ(MyManager.table_element(0,"iLow"),0);
+    EXPECT_EQ(MyManager.table_element(0,"iTopVar"),0);
     //True node test
-    EXPECT_EQ(unique_table[1].iID,1);
-    EXPECT_EQ(unique_table[1].iHigh,1);
-    EXPECT_EQ(unique_table[1].iLow,1);
-    EXPECT_EQ(unique_table[1].iTopVar,1);
+    EXPECT_EQ(MyManager.table_element(1,"iID"),1);
+    EXPECT_EQ(MyManager.table_element(1,"iHigh"),1);
+    EXPECT_EQ(MyManager.table_element(1,"iLow"),1);
+    EXPECT_EQ(MyManager.table_element(1,"iTopVar"),1);
     //Initial size test
     EXPECT_EQ(MyManager.uniqueTableSize(),2);
 }
@@ -48,9 +48,9 @@ TEST(Test_createVar,functions){
     BDD_ID MyTest = MyManager.createVar("a");
     //Value's test
     EXPECT_EQ(MyTest,2);
-    EXPECT_EQ(unique_table[MyTest].iHigh,1);
-    EXPECT_EQ(unique_table[MyTest].iLow,0);
-    EXPECT_EQ(unique_table[MyTest].iTopVar,MyTest);
+    EXPECT_EQ(MyManager.table_element(MyTest,"iHigh"),1);
+    EXPECT_EQ(MyManager.table_element(MyTest,"iLow"),0);
+    EXPECT_EQ(MyManager.table_element(MyTest,"iTopVar"),MyTest);
     //The size has to increase by 1
     EXPECT_EQ(MyManager.uniqueTableSize(),3);
 }
@@ -93,8 +93,8 @@ TEST(Test_ite,functions){
     //apply the ite algorithm
     BDD_ID ite=MyManager.ite(a,1,b);//A or B
     EXPECT_EQ(ite, 4);// A new ID was created
-    EXPECT_EQ(unique_table[ite].iHigh, 1);//Verifying with the OR behavior
-    EXPECT_EQ(unique_table[ite].iLow, 3);//Verifying with the OR behavior
+    EXPECT_EQ(MyManager.table_element(ite,"iHigh"), 1);//Verifying with the OR behavior
+    EXPECT_EQ(MyManager.table_element(ite,"iLow"), 3);//Verifying with the OR behavior
     EXPECT_EQ(MyManager.uniqueTableSize(), 5);//A new node should be created
 }
 
@@ -105,8 +105,8 @@ TEST(Test_TopVariable_3,ITEfunctions){
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID c = MyManager.createVar("c");
-    EXPECT_EQ(MyManager.TopVariable_3(MyManager.True(),b,c), b);
     EXPECT_EQ(MyManager.TopVariable_3(a,b,c), a);
+    EXPECT_EQ(MyManager.TopVariable_3(b,c,a), a);
 }
 
 TEST(Test_find_or_add_unique_table,ITEfunctions){
@@ -119,8 +119,8 @@ TEST(Test_find_or_add_unique_table,ITEfunctions){
     //Add a node
     BDD_ID NewNode = MyManager.find_or_add_unique_table(a,0,1);//Should create a new node for not(A)
     EXPECT_EQ(NewNode, 3);//A new ID should be created
-    EXPECT_EQ(unique_table[NewNode].iHigh, 0);
-    EXPECT_EQ(unique_table[NewNode].iLow, 1);
+    EXPECT_EQ(MyManager.table_element(NewNode,"iHigh"), 0);
+    EXPECT_EQ(MyManager.table_element(NewNode,"iLow"), 1);
 }
 //End of ITE functions
 
@@ -161,9 +161,9 @@ TEST(Test_neg,functions){
     MyManager.reset_table();
     BDD_ID b = MyManager.createVar("b");
     BDD_ID negB = MyManager.neg(b);
-    EXPECT_EQ(unique_table[negB].iTopVar, b);
-    EXPECT_EQ(unique_table[negB].iHigh, 0);
-    EXPECT_EQ(unique_table[negB].iLow, 1);
+    EXPECT_EQ(MyManager.table_element(negB,"iTopVar"), b);
+    EXPECT_EQ(MyManager.table_element(negB,"iHigh"), 0);
+    EXPECT_EQ(MyManager.table_element(negB,"iLow"), 1);
 }
 
 TEST(Test_and2,functions){
@@ -172,9 +172,9 @@ TEST(Test_and2,functions){
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID AandB = MyManager.and2(a,b);
-    EXPECT_EQ(unique_table[AandB].iTopVar, a);
-    EXPECT_EQ(unique_table[AandB].iHigh, b);
-    EXPECT_EQ(unique_table[AandB].iLow, 0);
+    EXPECT_EQ(MyManager.table_element(AandB,"iTopVar"), a);
+    EXPECT_EQ(MyManager.table_element(AandB,"iHigh"), b);
+    EXPECT_EQ(MyManager.table_element(AandB,"iLow"), 0);
 }
 
 TEST(Test_or2,functions){
@@ -183,9 +183,9 @@ TEST(Test_or2,functions){
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID AorB = MyManager.or2(a,b);
-    EXPECT_EQ(unique_table[AorB].iTopVar, a);
-    EXPECT_EQ(unique_table[AorB].iHigh, 1);
-    EXPECT_EQ(unique_table[AorB].iLow, b);
+    EXPECT_EQ(MyManager.table_element(AorB,"iTopVar"), a);
+    EXPECT_EQ(MyManager.table_element(AorB,"iHigh"), 1);
+    EXPECT_EQ(MyManager.table_element(AorB,"iLow"), b);
 }
 
 TEST(Test_xor2,functions){
@@ -194,9 +194,9 @@ TEST(Test_xor2,functions){
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID AxorB = MyManager.xor2(a,b);
-    EXPECT_EQ(unique_table[AxorB].iTopVar, a);
-    EXPECT_EQ(unique_table[AxorB].iHigh, MyManager.neg(b));
-    EXPECT_EQ(unique_table[AxorB].iLow, b);
+    EXPECT_EQ(MyManager.table_element(AxorB,"iTopVar"), a);
+    EXPECT_EQ(MyManager.table_element(AxorB,"iHigh"), MyManager.neg(b));
+    EXPECT_EQ(MyManager.table_element(AxorB,"iLow"), b);
 }
 
 TEST(Test_nand2,functions){
@@ -205,9 +205,9 @@ TEST(Test_nand2,functions){
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID AnandB = MyManager.nand2(a,b);
-    EXPECT_EQ(unique_table[AnandB].iTopVar, a);
-    EXPECT_EQ(unique_table[AnandB].iHigh, MyManager.neg(b));
-    EXPECT_EQ(unique_table[AnandB].iLow, 1);
+    EXPECT_EQ(MyManager.table_element(AnandB,"iTopVar"), a);
+    EXPECT_EQ(MyManager.table_element(AnandB,"iHigh"), MyManager.neg(b));
+    EXPECT_EQ(MyManager.table_element(AnandB,"iLow"), 1);
 }
 
 TEST(Test_nor2,functions){
@@ -216,9 +216,9 @@ TEST(Test_nor2,functions){
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID AnorB = MyManager.nor2(a,b);
-    EXPECT_EQ(unique_table[AnorB].iTopVar, a);
-    EXPECT_EQ(unique_table[AnorB].iHigh, 0);
-    EXPECT_EQ(unique_table[AnorB].iLow, MyManager.neg(b));
+    EXPECT_EQ(MyManager.table_element(AnorB,"iTopVar"), a);
+    EXPECT_EQ(MyManager.table_element(AnorB,"iHigh"), 0);
+    EXPECT_EQ(MyManager.table_element(AnorB,"iLow"), MyManager.neg(b));
 }
 
 TEST(Test_xnor2,functions){
@@ -227,9 +227,9 @@ TEST(Test_xnor2,functions){
     BDD_ID a = MyManager.createVar("a");
     BDD_ID b = MyManager.createVar("b");
     BDD_ID AxnorB = MyManager.xnor2(a,b);
-    EXPECT_EQ(unique_table[AxnorB].iTopVar, a);
-    EXPECT_EQ(unique_table[AxnorB].iHigh, b);
-    EXPECT_EQ(unique_table[AxnorB].iLow, MyManager.neg(b));
+    EXPECT_EQ(MyManager.table_element(AxnorB,"iTopVar"), a);
+    EXPECT_EQ(MyManager.table_element(AxnorB,"iHigh"), b);
+    EXPECT_EQ(MyManager.table_element(AxnorB,"iLow"), MyManager.neg(b));
 }
 
 TEST(Test_getTopVarName,Test_getTopVarName_2){

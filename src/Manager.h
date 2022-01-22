@@ -39,6 +39,8 @@ namespace ClassProject {
 
         void print_table();
 
+        BDD_ID table_element(BDD_ID ID,string attribute); //This function was developed only for verification purpose
+
         BDD_ID TopVariable_3(const BDD_ID a,const BDD_ID b,const BDD_ID c);
 
         BDD_ID find_or_add_unique_table(const BDD_ID TopVariable,const BDD_ID r_high,const BDD_ID r_low);

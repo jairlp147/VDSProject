@@ -45,6 +45,14 @@ void::ClassProject::Manager::print_table(){
     }
 }
 
+BDD_ID ClassProject::Manager::table_element(BDD_ID ID,string attribute){
+    if (attribute=="iID"){return unique_table[ID].iID;}
+    else if (attribute=="iTopVar") {return unique_table[ID].iTopVar;}
+    else if (attribute=="iHigh") {return unique_table[ID].iHigh;}
+    else if (attribute=="iLow") {return unique_table[ID].iLow;}
+    else {return 0;}
+}
+
 BDD_ID ClassProject::Manager::TopVariable_3(const BDD_ID a, const BDD_ID b, const BDD_ID c) {
     BDD_ID Mytop;
     Mytop=unique_table[a].iTopVar; // a is never a constant

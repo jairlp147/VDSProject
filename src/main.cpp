@@ -18,5 +18,4 @@ int main(int argc, char* argv[])
     BDD_ID d = MyManager.createVar("d");
     BDD_ID f = MyManager.and2(MyManager.and2(c,d),MyManager.or2(a,b));
     MyManager.print_table();
-
 }
