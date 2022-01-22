@@ -59,9 +59,13 @@ namespace ClassProject {
 
         BDD_ID ite(const BDD_ID i, const BDD_ID t, const BDD_ID e);
 
-        BDD_ID coFactorTrue(const BDD_ID f, BDD_ID x = -1);
+        BDD_ID coFactorTrue(const BDD_ID f, BDD_ID x);
 
-        BDD_ID coFactorFalse(const BDD_ID f, BDD_ID x=-1);
+        BDD_ID coFactorTrue(const BDD_ID f);
+
+        BDD_ID coFactorFalse(const BDD_ID f, BDD_ID x);
+
+        BDD_ID coFactorFalse(const BDD_ID f);
 
         BDD_ID neg(const BDD_ID a);
 

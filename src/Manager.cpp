@@ -46,10 +46,8 @@ void::ClassProject::Manager::print_table(){
 }
 
 BDD_ID ClassProject::Manager::TopVariable_3(const BDD_ID a, const BDD_ID b, const BDD_ID c) {
-    BDD_ID Mytop=50000;
-    if (!isConstant(a)){
-        Mytop=unique_table[a].iTopVar;
-    }
+    BDD_ID Mytop;
+    Mytop=unique_table[a].iTopVar; // a is never a constant
     if (!isConstant(b)){
         Mytop=std::min({Mytop, unique_table[b].iTopVar});
     }
@@ -148,9 +146,46 @@ BDD_ID ClassProject::Manager::coFactorTrue(const BDD_ID f, BDD_ID x) {
     }
 }
 
+BDD_ID ClassProject::Manager::coFactorTrue(const BDD_ID f) {
+
+    BDD_ID T,F,x;
+    x = unique_table[f].iTopVar;
+
+    if (isConstant(f) || isConstant(x) || unique_table[f].iTopVar > x){
+        return f;
+    }
+
+    if(unique_table[f].iTopVar == x){
+        return unique_table[f].iHigh;
+    }
+    else{
+        T = coFactorTrue ( unique_table[f].iHigh , x ) ;
+        F = coFactorTrue ( unique_table[f].iLow , x ) ;
+        return ite(unique_table[f].iTopVar , T, F);
+    }
+}
+
 BDD_ID ClassProject::Manager::coFactorFalse(const BDD_ID f, BDD_ID x) {
     BDD_ID T,F;
     if(x==-1){x = unique_table[f].iTopVar;}
+
+    if (isConstant(f) || isConstant(x) || unique_table[f].iTopVar > x){
+        return f;
+    }
+
+    if(unique_table[f].iTopVar == x){
+        return unique_table[f].iLow;
+    }
+    else{
+        T = coFactorFalse ( unique_table[f].iHigh , x ) ;
+        F = coFactorFalse ( unique_table[f].iLow , x ) ;
+        return ite(unique_table[f].iTopVar , T, F);
+    }
+}
+
+BDD_ID ClassProject::Manager::coFactorFalse(const BDD_ID f) {
+    BDD_ID T,F,x;
+    x = unique_table[f].iTopVar;
 
     if (isConstant(f) || isConstant(x) || unique_table[f].iTopVar > x){
         return f;
@@ -226,6 +261,9 @@ void ClassProject::Manager::findNodes(const BDD_ID &root, std::set<BDD_ID> &node
 }
 
 void ClassProject::Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root) {
+    if (isConstant(unique_table[root].iID)){
+        return;
+    }
     vars_of_root.insert(unique_table[root].iTopVar);
     if(!isConstant(unique_table[root].iHigh)){
         findVars(unique_table[root].iHigh, vars_of_root);
@@ -233,12 +271,7 @@ void ClassProject::Manager::findVars(const BDD_ID &root, std::set<BDD_ID> &vars_
     if(!isConstant(unique_table[root].iLow)){
         findVars(unique_table[root].iLow, vars_of_root);
     }
-    if (isConstant(unique_table[root].iHigh)){
-        return;                                                            //   CORRECT??????
-    }
-    if (isConstant(unique_table[root].iLow)){
-        return;                                                            //   CORRECT??????
-    }
+
 }
 
 
