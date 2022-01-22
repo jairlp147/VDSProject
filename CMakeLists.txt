@@ -8,6 +8,12 @@ link_directories(${CMAKE_SOURCE_DIR}/src)
 include_directories(${CMAKE_SOURCE_DIR}/src/test/)
 link_directories(${CMAKE_SOURCE_DIR}/src/test/)
 
+include_directories($CMAKE SOURCE DIR/src/verify/)
+link_directories($CMAKE SOURCE DIR/src/verify/)
+
+include_directories($CMAKE SOURCE DIR/src/bench/)
+link_directories($CMAKE SOURCE DIR/src/bench/)
+
 add_subdirectory(src)
 add_executable(VDSProject src/main.cpp)
 target_link_libraries(VDSProject Manager)
