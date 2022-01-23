@@ -37,6 +37,17 @@ vector<table> ClassProject::Manager::popVector(vector<table> unique_table, BDD_I
     return unique_table;
 }
 
+vector<comp_table> ClassProject::Manager::computed_table_popVector(vector<comp_table> computed_table, BDD_ID i,
+                                                                   BDD_ID t, BDD_ID e, BDD_ID r) {
+    comp_table store_Table;
+    store_Table.i= i;
+    store_Table.t=t;
+    store_Table.e=e;
+    store_Table.r=r;
+    computed_table.push_back(store_Table);
+    return computed_table;
+}
+
 void::ClassProject::Manager::print_table(){
 
     cout << endl << left << setw(15) << "Node"<< left << setw(10) << "BDD_ID" << left << setw(10) << "High" << left << setw(10) <<"Low"<< left << setw(10) <<"TopVar";
@@ -75,6 +86,25 @@ BDD_ID ClassProject::Manager::find_or_add_unique_table(const BDD_ID TopVariable,
      //highest CURRENT ID is = size-1, therefore new node will have id = size
     unique_table= popVector(unique_table, uniqueTableSize(), r_high, r_low, TopVariable, "Unknown");
     return unique_table[uniqueTableSize()-1].iID; //return ID new node created. ID last node is size -1
+}
+
+
+void ClassProject::Manager::add_computed_table(const BDD_ID i, const BDD_ID t, const BDD_ID e, const BDD_ID r) {
+    computed_table= computed_table_popVector(computed_table, i, t, e, r);
+}
+
+bool  ClassProject::Manager::Computed_Table_has_result(const BDD_ID i, const BDD_ID t, const BDD_ID e,  BDD_ID &r) {
+//return result
+    for(size_t i=0;i<computed_table.size();i++){
+        if((computed_table[i].i==i)&&(computed_table[i].t==t)&&(computed_table[i].e==e)){
+             r=computed_table[i].r;
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 }
 
 BDD_ID ClassProject::Manager::createVar(const std::string &label) {
@@ -123,11 +153,15 @@ BDD_ID ClassProject::Manager::ite(const BDD_ID i, const BDD_ID t, const BDD_ID e
         if(unique_table[i].iID==True()){return t;}
         else{return e;}
     }
+    else if (Computed_Table_has_result(i,t,e,r)) {
+        return r;
+    }
     else{//apply the ite algorithm
         MyTopVariable=TopVariable_3(i,t,e);//Determinate the top variable
         r_high=ite(coFactorTrue(i,MyTopVariable),coFactorTrue(t,MyTopVariable),coFactorTrue(e,MyTopVariable));
         r_low=ite(coFactorFalse(i,MyTopVariable),coFactorFalse(t,MyTopVariable),coFactorFalse(e,MyTopVariable));
         if(r_high==r_low){ // is reduction possible?
+            add_computed_table(i,t,e,r_high);
             return r_high;
         }
         r=find_or_add_unique_table(MyTopVariable,r_high,r_low);
