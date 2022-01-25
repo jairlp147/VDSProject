@@ -71,11 +71,13 @@ BDD_ID ClassProject::Manager::find_or_add_unique_table(const BDD_ID TopVariable,
     if ( found == inverse_table.end()){
         for(size_t i=0;i<uniqueTableSize();i++){
             if((unique_table[i].iTopVar==TopVariable)&&(unique_table[i].iHigh==r_high)&&(unique_table[i].iLow==r_low)){
+                //inverse_table.insert({{r_high,r_low,TopVariable},unique_table[i].iID});
                 return unique_table[i].iID;
             }
         }
         //highest CURRENT ID is = size-1, therefore new node will have id = size
         unique_table= popVector(unique_table, uniqueTableSize(), r_high, r_low, TopVariable, "Unknown");
+        inverse_table.insert({{r_high,r_low,TopVariable},unique_table[uniqueTableSize()-1].iID});
         return unique_table[uniqueTableSize()-1].iID; //return ID new node created. ID last node is size -1
     }
     else{
