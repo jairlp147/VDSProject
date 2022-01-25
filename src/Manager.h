@@ -28,6 +28,7 @@ struct Key {
     int third;
 };
 
+//hash funtion
 struct KeyHash {
     std::size_t operator()(const Key& k) const
     {
