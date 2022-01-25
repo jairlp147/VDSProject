@@ -21,8 +21,8 @@ struct table{
     BDD_ID iID, iHigh, iLow, iTopVar;
 };
 
-struct comp_table{
-    BDD_ID i, t, e, r;
+struct computed_table{
+    BDD_ID i, t, e, result;
 };
 
 namespace ClassProject {
@@ -32,7 +32,8 @@ namespace ClassProject {
     private:
 
         vector<table> unique_table;  //create vector of dataype structure //vector table "unique_table" here so it's private access
-        vector<comp_table> computed_table;
+        int hastTable[100000][4];//4 elements: ite(if-then-else), r(result), 100000 items
+        int arraysize=100000;
 
     public:
 
@@ -40,21 +41,21 @@ namespace ClassProject {
 
         vector<table> popVector(vector<table> unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName); //add new vector
 
-        vector<comp_table> computed_table_popVector(vector<comp_table> computed_table, BDD_ID i, BDD_ID t, BDD_ID e, BDD_ID r);
-
         void reset_table();
 
         void print_table();
 
         BDD_ID table_element(BDD_ID ID,string attribute); //This function was developed only for verification purpose
 
+        int hashfunc(int i,int t,int e);
+
+        int hashsearch(int i,int t,int e);
+
+        void hashinsert(int i,int t,int e, int r);
+
         BDD_ID TopVariable_3(const BDD_ID a,const BDD_ID b,const BDD_ID c);
 
         BDD_ID find_or_add_unique_table(const BDD_ID TopVariable,const BDD_ID r_high,const BDD_ID r_low);
-
-        bool Computed_Table_has_result(const BDD_ID i, const BDD_ID t, const BDD_ID e, BDD_ID &result);
-
-        void add_computed_table(const BDD_ID i,const BDD_ID t,const BDD_ID e, const BDD_ID r);
 
         BDD_ID createVar(const std::string &label);
 
@@ -103,3 +104,4 @@ namespace ClassProject {
 }
 
 #endif
+
