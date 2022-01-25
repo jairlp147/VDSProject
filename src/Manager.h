@@ -31,7 +31,7 @@ struct Key {
 struct KeyHash {
     std::size_t operator()(const Key& k) const
     {
-        return k.first*k.second*k.third;
+        return k.first*k.second*k.third+k.first;// +k.first to avoid variables collision
     }
 };
 
