@@ -19,6 +19,12 @@ namespace ClassProject {
 
         virtual void print_table() = 0;
 
+        virtual int hashfunc(int i,int t,int e) = 0;
+
+        virtual int hashsearch(int i,int t,int e) = 0;
+
+        virtual void hashinsert(int i,int t,int e, int r) = 0;
+
         virtual BDD_ID TopVariable_3(const BDD_ID a,const BDD_ID b,const BDD_ID c) = 0;
 
         virtual BDD_ID find_or_add_unique_table(const BDD_ID TopVariable,const BDD_ID r_high,const BDD_ID r_low) = 0;
