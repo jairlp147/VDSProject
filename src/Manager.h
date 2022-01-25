@@ -11,6 +11,7 @@
 #include <iomanip>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 using namespace std;
 
@@ -21,8 +22,24 @@ struct table{
     BDD_ID iID, iHigh, iLow, iTopVar;
 };
 
-struct computed_table{
-    BDD_ID i, t, e, result;
+struct Key {
+    int first;
+    int second;
+    int third;
+};
+
+struct KeyHash {
+    std::size_t operator()(const Key& k) const
+    {
+        return k.first*k.second*k.third;
+    }
+};
+
+struct KeyEqual {
+    bool operator()(const Key& lhs, const Key& rhs) const
+    {
+        return lhs.first == rhs.first && lhs.second == rhs.second && lhs.third == rhs.third;
+    }
 };
 
 namespace ClassProject {
@@ -32,8 +49,8 @@ namespace ClassProject {
     private:
 
         vector<table> unique_table;  //create vector of dataype structure //vector table "unique_table" here so it's private access
-        int hastTable[100000][4];//4 elements: ite(if-then-else), r(result), 100000 items
-        int arraysize=100000;
+        std::unordered_map<Key, int , KeyHash, KeyEqual> computed_table;
+        std::unordered_map<Key, int , KeyHash, KeyEqual> inverse_table;
 
     public:
 
@@ -46,12 +63,6 @@ namespace ClassProject {
         void print_table();
 
         BDD_ID table_element(BDD_ID ID,string attribute); //This function was developed only for verification purpose
-
-        int hashfunc(int i,int t,int e);
-
-        int hashsearch(int i,int t,int e);
-
-        void hashinsert(int i,int t,int e, int r);
 
         BDD_ID TopVariable_3(const BDD_ID a,const BDD_ID b,const BDD_ID c);
 

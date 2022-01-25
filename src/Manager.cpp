@@ -53,41 +53,6 @@ BDD_ID ClassProject::Manager::table_element(BDD_ID ID,string attribute){
     else {return 0;}
 }
 
-int ClassProject::Manager::hashfunc(int i,int t,int e){
-    return i*t*e % arraysize;
-}
-
-void ClassProject::Manager::hashinsert(int i,int t,int e, int r){
-    int Index=hashfunc(i,t,e);
-    while(hastTable[Index][3]!=0){//r is never zero but the deafult value is 0 //Verify (Fix:if the hasttable is full the program will stop)
-        Index=(Index+1)%arraysize;//Can overwrite other index- And dont found a space. //Always sum one until find the blank scape(no always true)
-    }
-    hastTable[Index][0]=i;//i
-    hastTable[Index][1]=t;//t
-    hastTable[Index][2]=e;//e
-    hastTable[Index][3]=r;//r
-}
-
-int ClassProject::Manager::hashsearch(int i,int t,int e){
-    int default_Index=arraysize+1;//This Index doesnt exist so if I get this as result I know that the search failed
-    int hash=hashfunc(i,t,e);
-    int Index=hashfunc(i,t,e);
-    char done=0;
-    while(!done){
-        if((hastTable[Index][0]==i)&&(hastTable[Index][1]==t)&&(hastTable[Index][2]==e)){
-            return Index;
-            done=1;
-        }
-        else if((hash!=hashfunc(hastTable[Index][0],hastTable[Index][1],hastTable[Index][2]))||(hastTable[Index][4]==0)){
-            done=1;
-        }
-        else{
-            Index=(Index+1)%arraysize;
-        }
-    }
-    return default_Index;
-}
-
 BDD_ID ClassProject::Manager::TopVariable_3(const BDD_ID a, const BDD_ID b, const BDD_ID c) {
     BDD_ID Mytop;
     Mytop=unique_table[a].iTopVar; // a is never a constant
@@ -102,14 +67,21 @@ BDD_ID ClassProject::Manager::TopVariable_3(const BDD_ID a, const BDD_ID b, cons
 
 BDD_ID ClassProject::Manager::find_or_add_unique_table(const BDD_ID TopVariable, const BDD_ID r_high,
                                                        const BDD_ID r_low) {
-    for(size_t i=0;i<uniqueTableSize();i++){
-        if((unique_table[i].iTopVar==TopVariable)&&(unique_table[i].iHigh==r_high)&&(unique_table[i].iLow==r_low)){
-            return unique_table[i].iID;
+    auto found = inverse_table.find({r_high,r_low,TopVariable});
+    if ( found == inverse_table.end()){
+        for(size_t i=0;i<uniqueTableSize();i++){
+            if((unique_table[i].iTopVar==TopVariable)&&(unique_table[i].iHigh==r_high)&&(unique_table[i].iLow==r_low)){
+                return unique_table[i].iID;
+            }
         }
+        //highest CURRENT ID is = size-1, therefore new node will have id = size
+        unique_table= popVector(unique_table, uniqueTableSize(), r_high, r_low, TopVariable, "Unknown");
+        return unique_table[uniqueTableSize()-1].iID; //return ID new node created. ID last node is size -1
     }
-     //highest CURRENT ID is = size-1, therefore new node will have id = size
-    unique_table= popVector(unique_table, uniqueTableSize(), r_high, r_low, TopVariable, "Unknown");
-    return unique_table[uniqueTableSize()-1].iID; //return ID new node created. ID last node is size -1
+    else{
+        return found->second;
+    }
+    // HASH Table: -> VarTop,High,LOW-> ID //reverse unique table
 }
 
 BDD_ID ClassProject::Manager::createVar(const std::string &label) {
@@ -154,14 +126,13 @@ size_t ClassProject::Manager::uniqueTableSize() {
 
 BDD_ID ClassProject::Manager::ite(const BDD_ID i, const BDD_ID t, const BDD_ID e) {
     BDD_ID MyTopVariable,r_high,r_low,r;
-    //cout << "ite      i:" << i << " t:" << t << " e:" << e  << endl;
+    auto found = computed_table.find({i,t,e});
     if(isConstant(i)){//Terminal case
         if(unique_table[i].iID==True()){return t;}
         else{return e;}
     }
-    else if(hashsearch(i,t,e)!=arraysize+1){
-        int Index=hashsearch(i,t,e);
-        return hastTable[Index][3];
+    else if ( found != computed_table.end()){
+        return found->second;
     }
     else{//apply the ite algorithm
         MyTopVariable=TopVariable_3(i,t,e);//Determinate the top variable
@@ -171,7 +142,7 @@ BDD_ID ClassProject::Manager::ite(const BDD_ID i, const BDD_ID t, const BDD_ID e
             return r_high;
         }
         r=find_or_add_unique_table(MyTopVariable,r_high,r_low);
-        hashinsert(i,t,e,r);
+        computed_table.insert({{i,t,e},r});
         return r;
     }
 }
