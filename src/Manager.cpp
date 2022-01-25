@@ -37,17 +37,6 @@ vector<table> ClassProject::Manager::popVector(vector<table> unique_table, BDD_I
     return unique_table;
 }
 
-vector<comp_table> ClassProject::Manager::computed_table_popVector(vector<comp_table> computed_table, BDD_ID i,
-                                                                   BDD_ID t, BDD_ID e, BDD_ID r) {
-    comp_table store_Table;
-    store_Table.i= i;
-    store_Table.t=t;
-    store_Table.e=e;
-    store_Table.r=r;
-    computed_table.push_back(store_Table);
-    return computed_table;
-}
-
 void::ClassProject::Manager::print_table(){
 
     cout << endl << left << setw(15) << "Node"<< left << setw(10) << "BDD_ID" << left << setw(10) << "High" << left << setw(10) <<"Low"<< left << setw(10) <<"TopVar";
@@ -62,6 +51,41 @@ BDD_ID ClassProject::Manager::table_element(BDD_ID ID,string attribute){
     else if (attribute=="iHigh") {return unique_table[ID].iHigh;}
     else if (attribute=="iLow") {return unique_table[ID].iLow;}
     else {return 0;}
+}
+
+int ClassProject::Manager::hashfunc(int i,int t,int e){
+    return i*t*e % arraysize;
+}
+
+void ClassProject::Manager::hashinsert(int i,int t,int e, int r){
+    int Index=hashfunc(i,t,e);
+    while(hastTable[Index][3]!=0){//r is never zero but the deafult value is 0 //Verify (Fix:if the hasttable is full the program will stop)
+        Index=(Index+1)%arraysize;//Can overwrite other index- And dont found a space. //Always sum one until find the blank scape(no always true)
+    }
+    hastTable[Index][0]=i;//i
+    hastTable[Index][1]=t;//t
+    hastTable[Index][2]=e;//e
+    hastTable[Index][3]=r;//r
+}
+
+int ClassProject::Manager::hashsearch(int i,int t,int e){
+    int default_Index=arraysize+1;//This Index doesnt exist so if I get this as result I know that the search failed
+    int hash=hashfunc(i,t,e);
+    int Index=hashfunc(i,t,e);
+    char done=0;
+    while(!done){
+        if((hastTable[Index][0]==i)&&(hastTable[Index][1]==t)&&(hastTable[Index][2]==e)){
+            return Index;
+            done=1;
+        }
+        else if((hash!=hashfunc(hastTable[Index][0],hastTable[Index][1],hastTable[Index][2]))||(hastTable[Index][4]==0)){
+            done=1;
+        }
+        else{
+            Index=(Index+1)%arraysize;
+        }
+    }
+    return default_Index;
 }
 
 BDD_ID ClassProject::Manager::TopVariable_3(const BDD_ID a, const BDD_ID b, const BDD_ID c) {
@@ -86,25 +110,6 @@ BDD_ID ClassProject::Manager::find_or_add_unique_table(const BDD_ID TopVariable,
      //highest CURRENT ID is = size-1, therefore new node will have id = size
     unique_table= popVector(unique_table, uniqueTableSize(), r_high, r_low, TopVariable, "Unknown");
     return unique_table[uniqueTableSize()-1].iID; //return ID new node created. ID last node is size -1
-}
-
-
-void ClassProject::Manager::add_computed_table(const BDD_ID i, const BDD_ID t, const BDD_ID e, const BDD_ID r) {
-    computed_table= computed_table_popVector(computed_table, i, t, e, r);
-}
-
-bool  ClassProject::Manager::Computed_Table_has_result(const BDD_ID i, const BDD_ID t, const BDD_ID e,  BDD_ID &r) {
-//return result
-    for(size_t i=0;i<computed_table.size();i++){
-        if((computed_table[i].i==i)&&(computed_table[i].t==t)&&(computed_table[i].e==e)){
-             r=computed_table[i].r;
-            return true;
-        }
-        else{
-            return false;
-        }
-    }
-
 }
 
 BDD_ID ClassProject::Manager::createVar(const std::string &label) {
@@ -149,22 +154,24 @@ size_t ClassProject::Manager::uniqueTableSize() {
 
 BDD_ID ClassProject::Manager::ite(const BDD_ID i, const BDD_ID t, const BDD_ID e) {
     BDD_ID MyTopVariable,r_high,r_low,r;
+    //cout << "ite      i:" << i << " t:" << t << " e:" << e  << endl;
     if(isConstant(i)){//Terminal case
         if(unique_table[i].iID==True()){return t;}
         else{return e;}
     }
-    else if (Computed_Table_has_result(i,t,e,r)) {
-        return r;
+    else if(hashsearch(i,t,e)!=arraysize+1){
+        int Index=hashsearch(i,t,e);
+        return hastTable[Index][3];
     }
     else{//apply the ite algorithm
         MyTopVariable=TopVariable_3(i,t,e);//Determinate the top variable
         r_high=ite(coFactorTrue(i,MyTopVariable),coFactorTrue(t,MyTopVariable),coFactorTrue(e,MyTopVariable));
         r_low=ite(coFactorFalse(i,MyTopVariable),coFactorFalse(t,MyTopVariable),coFactorFalse(e,MyTopVariable));
         if(r_high==r_low){ // is reduction possible?
-            add_computed_table(i,t,e,r_high);
             return r_high;
         }
         r=find_or_add_unique_table(MyTopVariable,r_high,r_low);
+        hashinsert(i,t,e,r);
         return r;
     }
 }
