@@ -24,7 +24,7 @@ void ClassProject::Manager::reset_table() {
     unique_table.push_back(vectable);
 }
 
-vector<table> ClassProject::Manager::popVector(vector<table> unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low,
+vector<table> &ClassProject::Manager::popVector(vector<table> &unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low,
                                                BDD_ID topVar, string nodeName) {
     //create structure, fill in info passed as argument and pop (add) new vector into existing vectors.
     table vectable;
@@ -129,12 +129,18 @@ size_t ClassProject::Manager::uniqueTableSize() {
 
 BDD_ID ClassProject::Manager::ite(const BDD_ID i, const BDD_ID t, const BDD_ID e) {
     BDD_ID MyTopVariable,r_high,r_low,r;
-    auto found = computed_table.find({i,t,e});
-    if(isConstant(i)){//Terminal case
+    std::unordered_map<Key, BDD_ID , KeyHash, KeyEqual>::const_iterator found;
+    if(isConstant(i)){//Terminal case (i==1, i==0)
         if(unique_table[i].iID==True()){return t;}
         else{return e;}
     }
-    else if ( found != computed_table.end()){
+    else if (t == e){//Terminal case
+        return t;
+    }
+    else if (t == 1 && e == 0){//Terminal case
+        return i;
+    }
+    else if ((found=computed_table.find({i,t,e})) != computed_table.end()){
         return found->second;
     }
     else{//apply the ite algorithm
@@ -153,7 +159,6 @@ BDD_ID ClassProject::Manager::ite(const BDD_ID i, const BDD_ID t, const BDD_ID e
 BDD_ID ClassProject::Manager::coFactorTrue(const BDD_ID f, BDD_ID x) {
 
     BDD_ID T,F;
-    if(x==-1){x = unique_table[f].iTopVar;}
 
     if (isConstant(f) || isConstant(x) || unique_table[f].iTopVar > x){
         return f;
@@ -170,27 +175,11 @@ BDD_ID ClassProject::Manager::coFactorTrue(const BDD_ID f, BDD_ID x) {
 }
 
 BDD_ID ClassProject::Manager::coFactorTrue(const BDD_ID f) {
-
-    BDD_ID T,F,x;
-    x = unique_table[f].iTopVar;
-
-    if (isConstant(f) || isConstant(x) || unique_table[f].iTopVar > x){
-        return f;
-    }
-
-    if(unique_table[f].iTopVar == x){
-        return unique_table[f].iHigh;
-    }
-    else{
-        T = coFactorTrue ( unique_table[f].iHigh , x ) ;
-        F = coFactorTrue ( unique_table[f].iLow , x ) ;
-        return ite(unique_table[f].iTopVar , T, F);
-    }
+    return unique_table[f].iHigh;
 }
 
 BDD_ID ClassProject::Manager::coFactorFalse(const BDD_ID f, BDD_ID x) {
     BDD_ID T,F;
-    if(x==-1){x = unique_table[f].iTopVar;}
 
     if (isConstant(f) || isConstant(x) || unique_table[f].iTopVar > x){
         return f;
@@ -207,63 +196,35 @@ BDD_ID ClassProject::Manager::coFactorFalse(const BDD_ID f, BDD_ID x) {
 }
 
 BDD_ID ClassProject::Manager::coFactorFalse(const BDD_ID f) {
-    BDD_ID T,F,x;
-    x = unique_table[f].iTopVar;
-
-    if (isConstant(f) || isConstant(x) || unique_table[f].iTopVar > x){
-        return f;
-    }
-
-    if(unique_table[f].iTopVar == x){
-        return unique_table[f].iLow;
-    }
-    else{
-        T = coFactorFalse ( unique_table[f].iHigh , x ) ;
-        F = coFactorFalse ( unique_table[f].iLow , x ) ;
-        return ite(unique_table[f].iTopVar , T, F);
-    }
+    return unique_table[f].iLow;
 }
 
 BDD_ID ClassProject::Manager::neg(const BDD_ID a) {
-    BDD_ID temp = ite(a, 0, 1);
-    unique_table[temp].node = "!" + unique_table[a].node;
-    return temp;
+    return ite(a, 0, 1);
 }
 
 BDD_ID ClassProject::Manager::and2(const BDD_ID a, const BDD_ID b) {
-    BDD_ID temp = ite(a, b, 0);
-    unique_table[temp].node = unique_table[a].node + "*" + unique_table[b].node;
-    return temp;
+   return ite(a, b, 0); //removed label propagation
 }
 
 BDD_ID ClassProject::Manager::or2(const BDD_ID a, const BDD_ID b) {
-    BDD_ID temp = ite(a, 1, b);
-    unique_table[temp].node = unique_table[a].node + "+" + unique_table[b].node;
-    return temp;
+    return ite(a, 1, b);
 }
 
 BDD_ID ClassProject::Manager::xor2(const BDD_ID a, const BDD_ID b) {
-    BDD_ID temp = ite(a, neg(b), b);
-    unique_table[temp].node = unique_table[a].node + "⊕" + unique_table[b].node;
-    return temp;
+     return ite(a, neg(b), b);
 }
 
 BDD_ID ClassProject::Manager::nand2(const BDD_ID a, const BDD_ID b) {
-    BDD_ID temp = ite(neg(a), 1, neg(b));
-    unique_table[temp].node = unique_table[a].node + " nand " + unique_table[b].node;
-    return temp;
+    return ite(neg(a), 1, neg(b));
 }
 
 BDD_ID ClassProject::Manager::nor2(const BDD_ID a, const BDD_ID b) {
-    BDD_ID temp = ite(neg(a), neg(b), 0);
-    unique_table[temp].node = unique_table[a].node + " nor " + unique_table[b].node;
-    return temp;
+      return ite(neg(a), neg(b), 0);
 }
 
 BDD_ID ClassProject::Manager::xnor2(const BDD_ID a, const BDD_ID b) {
-    BDD_ID temp = ite(a, b, neg(b));
-    unique_table[temp].node = unique_table[a].node + "⊙" + unique_table[b].node;
-    return temp;
+       return ite(a, b, neg(b));
 }
 
 std::string ClassProject::Manager::getTopVarName(const BDD_ID &root) {

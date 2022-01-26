@@ -17,3 +17,12 @@ link_directories($CMAKE SOURCE DIR/src/bench/)
 add_subdirectory(src)
 add_executable(VDSProject src/main.cpp)
 target_link_libraries(VDSProject Manager)
+
+include_directories($CMAKE SOURCE DIR/src/verify/)
+link_directories($CMAKE SOURCE DIR/src/verify/)
+
+include_directories($CMAKE SOURCE DIR/src/bench/)
+link_directories($CMAKE SOURCE DIR/src/bench/)
+
+include_directories($CMAKE SOURCE DIR/C:/Boost/boost_1_78_0)
+link_directories($CMAKE SOURCE DIR/C:/Boost/boost_1_78_0)

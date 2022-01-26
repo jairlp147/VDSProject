@@ -15,7 +15,7 @@
 
 using namespace std;
 
-typedef int BDD_ID;
+typedef size_t BDD_ID;
 
 struct table{
     std::string node;
@@ -23,9 +23,9 @@ struct table{
 };
 
 struct Key {
-    int first;
-    int second;
-    int third;
+    size_t first;
+    size_t second;
+    size_t third;
 };
 
 //hash funtion
@@ -50,14 +50,14 @@ namespace ClassProject {
     private:
 
         vector<table> unique_table;  //create vector of dataype structure //vector table "unique_table" here so it's private access
-        std::unordered_map<Key, int , KeyHash, KeyEqual> computed_table;
-        std::unordered_map<Key, int , KeyHash, KeyEqual> inverse_table;
+        std::unordered_map<Key, BDD_ID , KeyHash, KeyEqual> computed_table;
+        std::unordered_map<Key, BDD_ID , KeyHash, KeyEqual> inverse_table;
 
     public:
 
         Manager(); //constructor
 
-        vector<table> popVector(vector<table> unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName); //add new vector
+        vector<table> &popVector(vector<table> &unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low, BDD_ID topVar, string nodeName); //add new vector, return and argument are references to a vector object, so we don't copy whole table every time (optimization!)
 
         void reset_table();
 
@@ -112,6 +112,8 @@ namespace ClassProject {
         void findNodes(const BDD_ID &root, std::set<BDD_ID> &nodes_of_root);
 
         void findVars(const BDD_ID &root, std::set<BDD_ID> &vars_of_root);
+
+        void print_ctable();
     };
 }
 

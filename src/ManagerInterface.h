@@ -10,7 +10,7 @@
 
 namespace ClassProject {
 
-    typedef int BDD_ID;
+    typedef size_t BDD_ID;
 
     class ManagerInterface {
     public:
