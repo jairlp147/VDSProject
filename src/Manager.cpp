@@ -27,13 +27,14 @@ void ClassProject::Manager::reset_table() {
 vector<table> &ClassProject::Manager::popVector(vector<table> &unique_table, BDD_ID bdd_id, BDD_ID high, BDD_ID low,
                                                BDD_ID topVar, string nodeName) {
     //create structure, fill in info passed as argument and pop (add) new vector into existing vectors.
-    table vectable;
-    vectable.iID = bdd_id;   //bdd_id of new node being added = vector.size -1;
-    vectable.node = nodeName;
-    vectable.iTopVar = topVar;
-    vectable.iHigh = high;
-    vectable.iLow = low;
-    unique_table.push_back(vectable);
+    //table vectable;
+    //vectable.iID = bdd_id;   //bdd_id of new node being added = vector.size -1;
+    //vectable.node = nodeName;
+    //vectable.iTopVar = topVar;
+    //vectable.iHigh = high;
+    //vectable.iLow = low;
+    //unique_table.push_back(vectable);
+    unique_table.push_back({nodeName,bdd_id,high,low,topVar});
     return unique_table;
 }
 
@@ -67,7 +68,8 @@ BDD_ID ClassProject::Manager::TopVariable_3(const BDD_ID a, const BDD_ID b, cons
 
 BDD_ID ClassProject::Manager::find_or_add_unique_table(const BDD_ID TopVariable, const BDD_ID r_high,
                                                        const BDD_ID r_low) {
-    auto found = inverse_table.find({r_high,r_low,TopVariable});
+    //auto found = inverse_table.find({r_high,r_low,TopVariable});
+    std::unordered_map<Key, BDD_ID , KeyHash, KeyEqual>::const_iterator found = inverse_table.find({r_high,r_low,TopVariable});
     if ( found == inverse_table.end()){
         //for(size_t i=0;i<uniqueTableSize();i++){
         //    if((unique_table[i].iTopVar==TopVariable)&&(unique_table[i].iHigh==r_high)&&(unique_table[i].iLow==r_low)){
@@ -76,7 +78,7 @@ BDD_ID ClassProject::Manager::find_or_add_unique_table(const BDD_ID TopVariable,
         //    }
         //}
         //highest CURRENT ID is = size-1, therefore new node will have id = size
-        unique_table= popVector(unique_table, uniqueTableSize(), r_high, r_low, TopVariable, "Unknown");
+        unique_table= popVector(unique_table, uniqueTableSize(), r_high, r_low, TopVariable, "");
         inverse_table.insert({{r_high,r_low,TopVariable},unique_table[uniqueTableSize()-1].iID});
         return unique_table[uniqueTableSize()-1].iID; //return ID new node created. ID last node is size -1
     }

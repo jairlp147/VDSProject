@@ -23,14 +23,14 @@ struct table{
 };
 
 struct Key {
-    size_t first;
-    size_t second;
-    size_t third;
+    BDD_ID first;
+    BDD_ID second;
+    BDD_ID third;
 };
 
 //hash funtion
 struct KeyHash {
-    std::size_t operator()(const Key& k) const
+    BDD_ID operator()(const Key& k) const
     {
         return k.first*k.second*k.third+k.first;// +k.first to avoid variables collision
     }
