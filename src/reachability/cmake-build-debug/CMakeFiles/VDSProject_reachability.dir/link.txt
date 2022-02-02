@@ -1,0 +1,3 @@
+"J:\Softwares\Clion\CLion 2021.2.3\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\VDSProject_reachability.dir/objects.a
+C:\PROGRA~2\CODEBL~1\MinGW\bin\ar.exe cr CMakeFiles\VDSProject_reachability.dir/objects.a @CMakeFiles\VDSProject_reachability.dir\objects1.rsp
+C:\PROGRA~2\CODEBL~1\MinGW\bin\G__~1.EXE -g -Wl,--whole-archive CMakeFiles\VDSProject_reachability.dir/objects.a -Wl,--no-whole-archive -o VDSProject_reachability.exe -Wl,--out-implib,libVDSProject_reachability.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\VDSProject_reachability.dir\linklibs.rsp
