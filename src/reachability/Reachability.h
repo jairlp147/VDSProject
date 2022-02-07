@@ -7,10 +7,26 @@
 #define VDSPROJECT_REACHABILITY_H
 
 #include "ReachabilityInterface.h"
+#include "Reachability.h"
+#include <iostream>
+#include <string>
+#include <vector>
 
 namespace ClassProject {
 
+
     class Reachability : public ReachabilityInterface {
+
+    private:
+
+        vector<BDD_ID> stateBits;
+        vector<bool> stateVector;
+        set<bool> initialState;
+        vector<BDD_ID> transitionFunctions;
+        vector<BDD_ID> NextstateBits;
+        vector<BDD_ID> deltaBits;
+
+    public:
 
         void ReachabilityInterface(unsigned int stateSize);
 
