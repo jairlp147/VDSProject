@@ -21,10 +21,10 @@ namespace ClassProject {
 
         vector<BDD_ID> stateBits;
         vector<bool> stateVector;
-        set<bool> initialState;
-        vector<BDD_ID> transitionFunctions;
-        vector<BDD_ID> NextstateBits;
+        vector<bool> initialState;
         vector<BDD_ID> deltaBits;
+        vector<BDD_ID> transitionFunctions;
+        vector<BDD_ID> nextStateBits;
 
     public:
 
