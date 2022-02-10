@@ -89,8 +89,6 @@ bool ClassProject::Reachability::isReachable(const std::vector<bool> &stateVecto
                 temp[i] = or2(coFactorTrue(temp[i - 1], nextStateBits[i]), coFactorFalse(temp[i - 1], nextStateBits[i]));
             }
             img_stateBits = or2(coFactorTrue(temp[stateBits.size()-1], nextStateBits[0]), coFactorFalse(temp[stateBits.size()-1], nextStateBits[0]));
-
-
             //Compute New CRit
             CRit = or2(CR,img_stateBits);
 
