@@ -37,16 +37,17 @@ void ClassProject::Reachability::setTransitionFunctions(const std::vector<BDD_ID
     }
     else{
         for(int i = 0; i< transitionFunctions.size(); i++){
-            S = "Delta" + to_string(transitionFunctions.size()-i-1);
+//            S = "Delta" + to_string(transitionFunctions.size()-i-1);
 //            unique_table[uniqueTableSize()-i-1].node = S;
-//            deltaBits = transitionFunctions;
+            deltaBits = transitionFunctions;
         }
     }
 }
 
 bool ClassProject::Reachability::isReachable(const std::vector<bool> &stateVector){
 
-    BDD_ID T = 1,Cs = 1,temp[stateBits.size()],img_nextStateBits,img_stateBits,CRit,CR,tempx,tempy;
+    BDD_ID T = 1,Cs = 1,temp[stateBits.size()],img_nextStateBits,img_stateBits,CRit,CR,tempx,tempy,f,reachable;
+    bool result;
 
     if (stateVector.size() != stateBits.size()){
         throw runtime_error("The number of values does not match the number of state bits");
@@ -93,9 +94,27 @@ bool ClassProject::Reachability::isReachable(const std::vector<bool> &stateVecto
             CRit = or2(CR,img_stateBits);
 
         }while(CRit != CR);
+        f=CR;
 
-        // TO DO : How to check that the given state is reachable
+        // Compute reachability of given state bits
+        reachable=f;
+        for (int i = 0; i < stateBits.size(); ++i) {
+            if(stateVector[i]== false){
+                reachable=coFactorFalse(reachable,stateBits[i]);
+            }
+            else{
+                reachable=coFactorTrue(reachable,stateBits[i]);
+            }
+        }
+        if(reachable==0){
+            result= false;
+        }
+        else{
+            result= true;
+        }
+        return result;
     }
+
 }
 
 void ClassProject::Reachability::setInitState(const std::vector<bool> &stateVector) {
@@ -109,3 +128,6 @@ void ClassProject::Reachability::setInitState(const std::vector<bool> &stateVect
     }
 
 }
+
+// Verification for the code with the example is included in main_test.cpp in commented form
+//TODO: how to instantiate Reachability module???

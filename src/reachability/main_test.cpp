@@ -19,24 +19,22 @@ int main(int argc, char* argv[])
 //
 //int main(int argc, char* argv[])
 //{
-//    Reachability reachableState;
+//    Manager MyManager;
+//    bool r;
+//    vector<BDD_ID> x,s;
+//    vector<bool> y,z;
 //
-//    vector<BDD_ID> x;
-//    vector<BDD_ID> s;
-//    vector<bool> y;
+//    MyManager.ReachabilityInterface(2);
+//    s = MyManager.getStates();
+//    x={MyManager.neg(s[0]),MyManager.neg(s[1]),};
+//    MyManager.setTransitionFunctions(x);
 //
-//    reachableState.ReachabilityInterface(2);
-//    s = reachableState.getStates();
-//    x.push_back(reachableState.neg(s[0]));
-//    x.push_back(reachableState.neg(s[1]));
-//    reachableState.setTransitionFunctions(x);
+//    y= {0,0};
+//    MyManager.setInitState(y);
 //
-//    y.push_back(0);
-//    y.push_back(0);
-//    reachableState.setInitState(y);
-//
-//    reachableState.isReachable(y);
-//    reachableState.print_table();
-//
-//    return 0;
+////    z.push_back(0);
+//    z= {1,1};
+//    r = MyManager.isReachable(z);
+//    cout<<" reachability of given state is = "<< r<<" [0 --> the given state is unreachable/ 1 --> given state is reachable]"<<endl;
+//    MyManager.print_table();
 //}
