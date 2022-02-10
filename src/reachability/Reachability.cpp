@@ -38,8 +38,8 @@ void ClassProject::Reachability::setTransitionFunctions(const std::vector<BDD_ID
     else{
         for(int i = 0; i< transitionFunctions.size(); i++){
             S = "Delta" + to_string(transitionFunctions.size()-i-1);
-            unique_table[uniqueTableSize()-i-1].node = S;
-            deltaBits = transitionFunctions;
+//            unique_table[uniqueTableSize()-i-1].node = S;
+//            deltaBits = transitionFunctions;
         }
     }
 }
@@ -92,7 +92,7 @@ bool ClassProject::Reachability::isReachable(const std::vector<bool> &stateVecto
             //Compute New CRit
             CRit = or2(CR,img_stateBits);
 
-        }while(CRit == CR);
+        }while(CRit != CR);
 
         // TO DO : How to check that the given state is reachable
     }
