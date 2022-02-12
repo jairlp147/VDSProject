@@ -17,7 +17,7 @@ namespace ClassProject {
 
     class Reachability : public ReachabilityInterface {
 
-    private:
+    public:
 
         vector<BDD_ID> stateBits;
         vector<bool> stateVector;
@@ -26,9 +26,8 @@ namespace ClassProject {
         vector<BDD_ID> transitionFunctions;
         vector<BDD_ID> nextStateBits;
 
-    public:
 
-        void ReachabilityInterface(unsigned int stateSize);
+        explicit Reachability(unsigned int stateSize);
 
         const std::vector<BDD_ID> &getStates() const;
 
@@ -37,6 +36,8 @@ namespace ClassProject {
         void setTransitionFunctions(const std::vector<BDD_ID> &transitionFunctions);
 
         void setInitState(const std::vector<bool> &stateVector);
+
+        BDD_ID ComputeReachableStates();
         
     };
 
