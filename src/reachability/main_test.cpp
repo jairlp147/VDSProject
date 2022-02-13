@@ -151,4 +151,5 @@ TEST(NewExample,functions){
     EXPECT_EQ(testReachability.isReachable({1,0,1}),false);
     EXPECT_EQ(testReachability.isReachable({0,1,1}),true);
     EXPECT_EQ(testReachability.isReachable({1,1,1}),false);
+
 }
