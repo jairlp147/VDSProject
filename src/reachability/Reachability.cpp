@@ -25,7 +25,11 @@ ClassProject::Reachability::Reachability(unsigned int stateSize) : ReachabilityI
         // Set default transition functions
         deltaBits = stateBits;
         // Set default initial state
-        initialState = {0,0};
+        //initialState = {0,0};
+
+        for(int i = 0; i< stateSize; i++){
+            initialState.push_back(0);
+        }
 
     }
 
@@ -51,6 +55,7 @@ void ClassProject::Reachability::setInitState(const std::vector<bool> &stateVect
     if (stateVector.size() != stateBits.size()) {
         throw runtime_error("The number of values does not match the number of state bits");
     } else {
+        initialState={};
         for (int i = 0; i < stateVector.size(); i++) {
             initialState.push_back(stateVector[i]);
         }

@@ -135,3 +135,20 @@ TEST(Test_isReachable_runtime_error,functions){
 
     EXPECT_THROW(testReachability.isReachable(x),runtime_error);
 }
+
+TEST(NewExample,functions){
+    ClassProject::Reachability testReachability(3);
+    vector<BDD_ID> s = testReachability.getStates();
+    vector<BDD_ID> x={testReachability.neg(s[0]),testReachability.xor2(s[0],s[1]),testReachability.neg(s[2])};
+    testReachability.setTransitionFunctions(x);
+    vector<bool> y= {1,1,0};
+    testReachability.setInitState(y);
+    EXPECT_EQ(testReachability.isReachable({0,0,0}),false);
+    EXPECT_EQ(testReachability.isReachable({1,0,0}),true);
+    EXPECT_EQ(testReachability.isReachable({0,1,0}),false);
+    EXPECT_EQ(testReachability.isReachable({1,1,0}),true);
+    EXPECT_EQ(testReachability.isReachable({0,0,1}),true);
+    EXPECT_EQ(testReachability.isReachable({1,0,1}),false);
+    EXPECT_EQ(testReachability.isReachable({0,1,1}),true);
+    EXPECT_EQ(testReachability.isReachable({1,1,1}),false);
+}
