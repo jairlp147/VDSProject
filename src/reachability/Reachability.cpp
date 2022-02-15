@@ -46,6 +46,11 @@ void ClassProject::Reachability::setTransitionFunctions(const std::vector<BDD_ID
         throw runtime_error("The number of given transition functions does not match the number of state bits");
     }
     else{
+            for(int i=0;i<stateBits.size();i++){
+                if(transitionFunctions[i]>uniqueTableSize()){
+                    throw runtime_error("The ID error. This ID doesn't exist:" + transitionFunctions[i]);
+                };
+            }
             deltaBits = transitionFunctions;
     }
 }

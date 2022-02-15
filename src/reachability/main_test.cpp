@@ -151,5 +151,10 @@ TEST(NewExample,functions){
     EXPECT_EQ(testReachability.isReachable({1,0,1}),false);
     EXPECT_EQ(testReachability.isReachable({0,1,1}),true);
     EXPECT_EQ(testReachability.isReachable({1,1,1}),false);
+}
 
+TEST(Test_setTransitionFunctions_undefined_ID,functions){
+    ClassProject::Reachability testReachability(2);
+    vector<::BDD_ID> x= {1000,2000};
+    EXPECT_THROW(testReachability.setTransitionFunctions(x),runtime_error);
 }
